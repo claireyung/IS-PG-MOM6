@@ -7,7 +7,15 @@ We modified the [seamount test case in MOM6-examples](https://github.com/NOAA-GF
 
 The seamount case from MOM6-examples is modified to have a smaller minimum thickness, and a "roof" so that the icemount is symmetric with it. The icemount has a thickness presribed to get a symmetric geometry.
 
-Key testing things were the use of `MASS_WEIGHT_IN_PRESSURE_GRADIENT` and correcting the surface pressure integrals/resetting it in the interior.
+Key testing things were the use of `MASS_WEIGHT_IN_PRESSURE_GRADIENT` and correcting the surface pressure integrals/resetting it in the interior:
+```
+#override MASS_WEIGHT_IN_PRESSURE_GRADIENT = True ! Turns on MWIPG algorithm for bottom 
+#override MASS_WEIGHT_IN_PRESSURE_GRADIENT_TOP = Truen! Turns on MWIPG algorithm for top
+#override RESET_INTXPA_INTEGRAL = True ! Reset integral at an interior ref interface
+#override MASS_WEIGHT_IN_PGF_VANISHED_ONLY = True ! Only apply MWIPG to cells partially vanished
+#override RESET_INTXPA_INTEGRAL_FLATTEST = True ! If no ideal, ref interface where not contacting vanished layers, then use flattest interface
+!CORRECTION_INTXPA ! Just corrects surface, doesn't reset to an interior layer, so not ideal when there are vanished layers.
+```
 
 Also ran 2D triangular ice shelf cases (`iceshelf`) and z-coordinate ISOMIP+ cases (`z-ISOMIP-quiet` without melt, `MOM6-examples-z` and `MOM6-examples-z-noMWIPG` with melt)
 
