@@ -1,0 +1,54 @@
+
+#override USE_REGRIDDING = True
+#override REGRIDDING_COORDINATE_MODE = "ZSTAR"! "SIGMA"!ZSTAR"! "ZSTAR"! "ZSTAR"!"RHO"!SIGMA"!ZSTAR"! "ZSTAR" 
+#override REMAPPING_SCHEME = "PPM_IH4"
+! modify minthick
+#override MIN_THICKNESS = 1E-12 !3 !12 !3 !12 !3 !12
+
+! Domain info: make bottom flat
+#override TOPO_CONFIG = "flat"
+#override MAXIMUM_DEPTH = 4000.0           !   [m]
+
+! Ice info
+ICE_PROFILE_CONFIG = "FILE"     !
+ICE_THICKNESS_FILE = "fatseamountice.nc" ! default = "ice_shelf_h.nc"
+!ICE_THICKNESS_FILE = "flatice0.nc"
+ICE_THICKNESS_VARNAME = "D" ! default = "h_shelf"
+ICE_AREA_VARNAME = "Ah"       ! default = "area_shelf_h"
+
+!#override TS_CONFIG = "ISOMIP"
+#override TS_CONFIG = "TS_profile"
+#override TS_FILE = "quadraticSalticemountz1D.nc"
+#override PRESSURE_RECONSTRUCTION_SCHEME = 2
+
+#override ICE_SHELF = True
+
+#override IC_OUTPUT_FILE = "MOM_IC.nc"
+
+#override THICKNESS_CONFIG = "ISOMIP"
+#override TRIM_IC_FOR_P_SURF = True
+SURFACE_PRESSURE_FILE = "fatseamountice.nc" !
+!SURFACE_PRESSURE_FILE = "flatice0.nc"
+                                ! The initial condition file for the surface pressure exerted by ice.
+SURFACE_PRESSURE_VAR = "D"  !   [Pa] default = ""
+                                ! The initial condition variable for the surface pressure exerted by ice.
+SURFACE_PRESSURE_SCALE = 8820.0 !   [file dependent] default = 1.0
+                                ! A scaling factor to convert SURFACE_PRESSURE_VAR from file
+                                ! SURFACE_PRESSURE_FILE into a surface pressure.
+
+! increase drag in min thickness layers
+#override DRAG_BG_VEL_SHELF = 0.05
+
+#override MASS_WEIGHT_IN_PRESSURE_GRADIENT = True !  False
+#override MASS_WEIGHT_IN_PRESSURE_GRADIENT_TOP = True
+
+! initialise properly (NB this exe has a hardcoded fix. Better to use Alistair's.)
+#override REMAP_BOUNDARY_EXTRAP = False
+#override INIT_BOUNDARY_EXTRAP = True
+#override TRIMMING_USES_REMAPPING = True
+#override TRIM_IC_Z_TOLERANCE = 1.e-10
+
+! PG correction turned on
+!#override CORRECTION_INTXPA = True
+!#override CORRECTION_INTXPA_5PT = True
+#override RESET_INTXPA_INTEGRAL = True !reqs CORRECTION_INTXPA = True if interior coord is slanted!

@@ -1,0 +1,73 @@
+! Blank file in which we can put "overrides" for parameters
+#override ICE_THICKNESS_FILE = "Ocean1_3D.nc"
+#override SURFACE_PRESSURE_FILE = "Ocean1_3D.nc"
+
+! Change vertical coordinate
+#override REGRIDDING_COORDINATE_MODE = "ZSTAR"
+
+! Change depth over which surface fluxes added
+#override MINIMUM_FORCING_DEPTH = 1
+
+! Eliminate melting when ocean thickness too thin
+!#override COL_THICK_MELT_THRESHOLD = 1.0
+
+! Recommended pressure gradient ice shelf fixes
+!#override MASS_WEIGHT_IN_PRESSURE_GRADIENT_TOP = True
+!#override RESET_INTXPA_INTEGRAL = True
+!#override MASS_WEIGHT_IN_PGF_VANISHED_ONLY = True
+!#override RESET_INTXPA_INTEGRAL_FLATTEST = True
+
+! Recommended to fix remapping and initialisation
+#override INIT_BOUNDARY_EXTRAP = True
+#override TRIMMING_USES_REMAPPING = True
+#override TRIM_IC_Z_TOLERANCE = 1.0E-10
+#override REMAPPING_USE_OM4_SUBCELLS = False 
+
+! Shelf insulator
+#override SHELF_INSULATOR = True
+
+! Do the proper three equation melt parameterisation (not quadratic approx)
+#override SHELF_S_ROOT = False
+
+! Add drag (can increases time before crashing but not always, depending on other parameters)
+#override LINEAR_DRAG = True
+#override DRAG_BG_VEL = 0.05
+
+! other changes tested
+#override HMIX_SFC_PROP = 1
+#override HMIX_UV_SFC_PROP = 1 ! has indexing issue, but default is zero (i.e. velocity in fric vel calcaultion seems to be vanished layer velocity (approx zero) + minimum velocity USTAR_SHELF_BG
+!#override USTAR_SHELF_BG = 0.0001
+
+!#override DIABATIC_FIRST = True
+#override KD = 1.0E-2
+#override KHTR = 1.0E-2
+
+!FIXED_DEPTH_LOTW_ML = True
+!LOTW_VISCOUS_ML_FLOOR = True
+!#override FRAZIL = True
+!#override PRESSURE_DEPENDENT_FRAZIL = True
+#override ANGSTROM = 1e-12
+!#override BOUND_SALINITY = True
+!#override MIN_THICKNESS = 1e-4
+!#override MIX_BOUNDARY_TRACER_ALE = True
+!#override MASSLESS_MATCH_TARGETS = False
+!#override HARMONIC_BL_SCALE = 20
+!#override DYNAMIC_SURFACE_PRESSURE = False
+!#override BOUNDARY_EXTRAPOLATION = False
+
+#override TFREEZE_FORM = "LINEAR"         ! default = "LINEAR"
+                                ! TFREEZE_FORM determines which expression should be
+                                ! used for the freezing point.  Currently, the valid
+                                ! choices are "LINEAR", "MILLERO_78".
+TFREEZE_S0_P0 = 0.0832          !   [deg C] default = 0.0
+                                ! When TFREEZE_FORM=LINEAR,
+                                ! this is the freezing potential temperature at
+                                ! S=0, P=0.
+DTFREEZE_DS = -0.0573           !   [deg C PSU-1] default = -0.054
+                                ! When TFREEZE_FORM=LINEAR,
+                                ! this is the derivative of the freezing potential
+                                ! temperature with salinity.
+DTFREEZE_DP = -7.53E-08         !   [deg C Pa-1] default = 0.0
+                                ! When TFREEZE_FORM=LINEAR,
+                                ! this is the derivative of the freezing potential
+                                ! temperature with pressure.

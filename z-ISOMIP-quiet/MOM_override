@@ -1,0 +1,82 @@
+! Blank file in which we can put "overrides" for parameters
+#override DAYMAX = 5.0
+#override TRIMMING_USES_REMAPPING = True
+#override USE_REGRIDDING = True
+#override REGRIDDING_COORDINATE_MODE = ZSTAR !  SIGMA_SHELF_ZSTAR !SIGMA !SIGMA_SHELF_ZSTAR
+#override REMAPPING_SCHEME = "PPM_IH4" !!
+#override TS_CONFIG = "ISOMIP"
+#override THICKNESS_CONFIG = "ISOMIP" !!
+ICE_SHELF_INITIALIZATION_Z_TOLERANCE = 1.0E-14
+TRIM_IC_Z_TOLERANCE = 1.e-10 !!
+DRAG_BG_VEL_SHELF = 0.05 !!
+!#override DENSITY_ICE = 917
+!#override ANGSTROM = 1.0E-10
+
+! Try adding hackmode thickness file
+!#override THICKNESS_CONFIG = "thickness_file"
+!#override THICKNESS_FILE = "thickness_sigma_6125.nc"
+!#override HACK_MODE = True
+!#override TRIM_IC_FOR_P_SURF = False
+
+!#override CORRECTION_INTXPA = True
+#override RESET_INTXPA_INTEGRAL = True !reqs CORRECTION_INTXPA = True
+
+!#override TOPO_EDITS_FILE = "Topo_edits_50m.nc"!_10m_less_drastic.nc"
+!#override TOPO_CONFIG = "file"
+!#override TOPO_FILE = "ISOMIP-topo-file.nc"
+!#override EQN_OF_STATE = "Wright"
+
+#override REMAP_BOUNDARY_EXTRAP = False
+#override INIT_BOUNDARY_EXTRAP = True
+
+#override MASS_WEIGHT_IN_PRESSURE_GRADIENT = True !False
+#override MASS_WEIGHT_IN_PRESSURE_GRADIENT_TOP = True
+
+#override HARMONIC_BL_SCALE = 1.0 
+!#override HARMONIC_VISC = True
+
+#override REMAPPING_USE_OM4_SUBCELLS = False
+#override DIAG_REMAPPING_USE_OM4_SUBCELLS = False
+
+#override LINEAR_DRAG = True
+#override DRAG_BG_VEL = 0.05
+#override GUST_CONST = 0.0
+#override DRAG_BG_VEL_SHELF = 0.05
+#override SHELF_THREE_EQN = True
+!#override USTAR_SHELF_BG = 0
+
+#override RHO_0 = 1035
+!#override DYNAMIC_SURFACE_PRESSURE = False
+#override BIHARMONIC = False
+#override SMAGORISNKY_AH = False
+
+!#override TOPO_CONFIG = "flat"
+!#override MAXIMUM_DEPTH = 2000
+!#override MINIMUM_DEPTH = 0
+
+!#override ICE_THICKNESS_FILE = "Ocean0_3D_Claire.nc"
+!#override SURFACE_PRESSURE_FILE = "Ocean0_3D_Claire.nc"
+
+!#override LOTW_VISCOUS_ML_FLOOR = True
+!#override FIXED_DEPTH_LOTW_ML = True
+
+!#override KD_SMOOTH = 0
+!#override MIX_BOUNDARY_TRACERS = False
+
+! Rayleigh drag for debugging
+!#override RAYLEIGH_DRAG_MINRATE = 0.01
+
+!#override EQN_OF_STATE = "Wright"
+!#override FRAC_DP_AT_POS_NEGATIVE_P_BUGFIX = True
+
+!#override SHELF_THERMO = True
+!#override USTAR_SHELF_BG = 5E-4
+!#override ICE_SHELF_FLUX_FACTOR = 1
+
+#override MASS_WEIGHT_IN_PGF_VANISHED_ONLY = True
+!#override ISOLATE_MASS_WEIGHT_PGF = True
+!#override PRESSURE_RECONSTRUCTION_SCHEME = 2
+
+!#override BOUSSINESQ = False
+!#override SEMI_BOUSSINESQ = False
+#override RESET_INTXPA_INTEGRAL_FLATTEST = True
