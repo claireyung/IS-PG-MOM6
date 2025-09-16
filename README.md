@@ -1,15 +1,21 @@
-# seamount-icemount-PGtest
+# Ice Shelf Pressure Gradient testing in MOM6
 
-For MOM6, modified from the seamount test case in MOM6-examples, to test initialisation and spurious currents in a simple, 2D set up.
+This repo contains the model configurations and plotting notebooks for
+Yung, C.K., Hallberg, R.W., Adcroft, A. and Morrison, A.K. "Assessment of a finite volume discretization of the horizontal pressure gradient force beneath sloping ice shelves" in prep., 2025
+
+We modified the [seamount test case in MOM6-examples](https://github.com/NOAA-GFDL/MOM6-examples/tree/dev/gfdl/ocean_only/seamount), to test initialisation and spurious currents in a simple, 2D set-up.
 
 The seamount case from MOM6-examples is modified to have a smaller minimum thickness, and a "roof" so that the icemount is symmetric with it. The icemount has a thickness presribed to get a symmetric geometry.
 
 Key testing things were the use of `MASS_WEIGHT_IN_PRESSURE_GRADIENT` and correcting the surface pressure integrals/resetting it in the interior.
 
-For sigma coordinates, `MASS_WEIGHT_IN_PRESSURE_GRADIENT` is not recommended. This option is best for when you have vanishing layers, i.e. z coordinates.
+Also ran 2D triangular ice shelf cases (`iceshelf`) and z-coordinate ISOMIP+ cases (`z-ISOMIP-quiet` without melt, `MOM6-examples-z` and `MOM6-examples-z-noMWIPG` with melt)
 
-For z coordinate ice shelf, we need both `MASS_WEIGHT_IN_PRESSURE_GRADIENT` and to reset the integral. Just correcting the surface pressure is not good enough as vanished layers have instability (see `icemount-z-surfcorrect`)
+MOM6 version used is here: https://github.com/claireyung/MOM6/releases/tag/CYPGv1. Some small modifications from main to add perfect sigma initialisation (only required near grounded ice), add diagnostics for the manuscript plots and fix a small bug.
 
-For sigma coordinate ice shelf, we need either to set the surface pressure correctly, or to reset the integral (which has inbuilt pressure correction) therefore there are two options that work.
+To run, a compiled version of MOM6 is required. Since the model domain is mostly 2D (and a few short 3D idealised runs), I ran on on a MacBook using the instructions in https://github.com/NOAA-GFDL/MOM6-examples/wiki/Compiling-on-MacBook-M1-chip-using-conda-environment. I saved this folder in [`MOM6-examples/ocean-only/ISOMIP` ](https://github.com/NOAA-GFDL/MOM6-examples) so to run I use 
+```
+mpirun  -host localhost ../../../../build/ocean_only/MOM6
+```
 
-MOM6 version used for testing is from https://github.com/Hallberg-NOAA/MOM6/blob/Yung_PGF_fixes
+Plots of the model results (quiet cases) are in `plotting.ipynb` and `compare-mwipg.ipynb`. Plots of the PG algorithm presented earlier in the paper are in `mom-pg-minimise-combined-func.ipynb`.
