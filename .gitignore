@@ -8,7 +8,6 @@ icemount*/*.nc
 seamount*/*.nc
 ice*/*.nc
 */RESTART/*
-INPUT/topog*.nc
 */INPUT/*.nc
 rho/*.nc
 MOM6-examples*/*.nc
