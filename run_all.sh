@@ -1,6 +1,7 @@
 #!/bin/bash
 find icemount* -maxdepth 0 -mindepth 0 -type d  -exec bash -c "cd {}; 
 pwd; 
+ln -s ../INPUT ;
 mpirun  -host localhost ../../../../build/ocean_only/MOM6 -n 8;
 echo 'finished' " \;
 
@@ -10,11 +11,13 @@ echo 'finished' " \;
 
 find seamount* -maxdepth 0 -mindepth 0 -type d  -exec bash -c "cd {}; 
 pwd; 
+ln -s ../INPUT ;
 mpirun  -host localhost ../../../../build/ocean_only/MOM6 -n 8;
 echo 'finished' " \;
 
 find iceshelf* -maxdepth 0 -mindepth 0 -type d  -exec bash -c "cd {}; 
 pwd; 
+ln -s ../INPUT ;
 mpirun  -host localhost ../../../../build/ocean_only/MOM6 -n 8;
 echo 'finished' " \;
 
