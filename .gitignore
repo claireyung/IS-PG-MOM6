@@ -36,4 +36,6 @@ z-ISOMIP-quiet/ISOMIP.ipynb
 z-ISOMIP-quiet/archive/
 z-ISOMIP-quiet/rayleigh-check.ipynb
 z-ISOMIP-quiet/saltanomcheck.ipynb
-
+TESTING/*
+INPUT2/*
+MOM6-exe-d259aed

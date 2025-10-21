@@ -54,8 +54,8 @@ DRAG_BG_VEL_SHELF = 0.05 !!
 !#override MAXIMUM_DEPTH = 2000
 !#override MINIMUM_DEPTH = 0
 
-!#override ICE_THICKNESS_FILE = "Ocean0_3D_Claire.nc"
-!#override SURFACE_PRESSURE_FILE = "Ocean0_3D_Claire.nc"
+#override ICE_THICKNESS_FILE = "Ocean0_3D_Claire.nc"
+#override SURFACE_PRESSURE_FILE = "Ocean0_3D_Claire.nc"
 
 !#override LOTW_VISCOUS_ML_FLOOR = True
 !#override FIXED_DEPTH_LOTW_ML = True
@@ -80,3 +80,7 @@ DRAG_BG_VEL_SHELF = 0.05 !!
 !#override BOUSSINESQ = False
 !#override SEMI_BOUSSINESQ = False
 #override RESET_INTXPA_INTEGRAL_FLATTEST = True
+
+#override RESCALE_STRONG_DRAG = True
+#override BT_STRONG_DRAG = True
+

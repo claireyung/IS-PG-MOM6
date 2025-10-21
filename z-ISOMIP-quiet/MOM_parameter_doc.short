@@ -112,7 +112,7 @@ NK = 25                         !   [nondim]
                                 ! The number of model layers.
 
 ! === module MOM_EOS ===
-EQN_OF_STATE = "LINEAR"         ! default = "WRIGHT"
+EQN_OF_STATE = "LINEAR"         ! default = "WRIGHT_FULL"
                                 ! EQN_OF_STATE determines which ocean equation of state should be used.
                                 ! Currently, the valid choices are "LINEAR", "UNESCO", "JACKETT_MCD", "WRIGHT",
                                 ! "WRIGHT_REDUCED", "WRIGHT_FULL", "NEMO", "ROQUET_RHO", "ROQUET_SPV" and
@@ -124,7 +124,9 @@ DRHO_DS = 0.805876093           !   [kg m-3 ppt-1] default = 0.8
                                 ! When EQN_OF_STATE=LINEAR, this is the partial derivative of density with
                                 ! salinity.
 RHO_T0_S0 = 999.9106806711001   !   [kg m-3] default = 1000.0
-                                ! When EQN_OF_STATE=LINEAR, this is the density at T=0, S=0.
+                                ! When EQN_OF_STATE=LINEAR, this is the density at T=0, S=0 and p=0.  If
+                                ! RHO_TO_SO is specified, RHO_REF_LINEAR_EOS, T_REF_LINEAR_EOS, S_REF_LINEAR_EOS
+                                ! and P_REF_LINEAR_EOS are not used.
 TFREEZE_FORM = "MILLERO_78"     ! default = "LINEAR"
                                 ! TFREEZE_FORM determines which expression should be used for the freezing
                                 ! point.  Currently, the valid choices are "LINEAR", "MILLERO_78", "TEOS_POLY",
@@ -220,7 +222,7 @@ CDRAG_SHELF = 0.0025            !   [nondim] default = 0.003
 ICE_PROFILE_CONFIG = "FILE"     !
                                 ! This specifies how the initial ice profile is specified. Valid values are:
                                 ! CHANNEL, FILE, and USER.
-ICE_THICKNESS_FILE = "Ocean1_3D.nc" ! default = "ice_shelf_h.nc"
+ICE_THICKNESS_FILE = "Ocean0_3D_Claire.nc" ! default = "ice_shelf_h.nc"
                                 ! The file from which the bathymetry is read.
 ICE_THICKNESS_VARNAME = "thick" ! default = "h_shelf"
                                 ! The name of the thickness variable in ICE_THICKNESS_FILE.
@@ -283,7 +285,7 @@ TRIM_IC_FOR_P_SURF = True       !   [Boolean] default = False
                                 ! If true, cuts way the top of the column for initial conditions at the depth
                                 ! where the hydrostatic pressure matches the imposed surface pressure which is
                                 ! read from file.
-SURFACE_PRESSURE_FILE = "Ocean1_3D.nc" !
+SURFACE_PRESSURE_FILE = "Ocean0_3D_Claire.nc" !
                                 ! The initial condition file for the surface pressure exerted by ice.
 SURFACE_PRESSURE_VAR = "thick"  ! default = ""
                                 ! The initial condition variable for the surface pressure exerted by ice.
@@ -359,10 +361,6 @@ BOUND_CORIOLIS = True           !   [Boolean] default = False
 MASS_WEIGHT_IN_PRESSURE_GRADIENT = True !   [Boolean] default = False
                                 ! If true, use mass weighting when interpolating T/S for integrals near the
                                 ! bathymetry in FV pressure gradient calculations.
-MASS_WEIGHT_IN_PRESSURE_GRADIENT_TOP = True !   [Boolean] default = False
-                                ! If true and MASS_WEIGHT_IN_PRESSURE_GRADIENT is true, use mass weighting when
-                                ! interpolating T/S for integrals near the top of the water column in FV
-                                ! pressure gradient calculations.
 MASS_WEIGHT_IN_PGF_VANISHED_ONLY = True !   [Boolean] default = False
                                 ! If true, use mass weighting when interpolating T/S for integrals only if one
                                 ! side is vanished according to RESET_INTXPA_H_NONVANISHED.
@@ -390,8 +388,6 @@ HARMONIC_BL_SCALE = 1.0         !   [nondim] default = 0.0
 HMIX_FIXED = 20.0               !   [m]
                                 ! The prescribed depth over which the near-surface viscosity and diffusivity are
                                 ! elevated when the bulk mixed layer is not used.
-MAXVEL = 10.0                   !   [m s-1] default = 3.0E+08
-                                ! The maximum velocity allowed before the velocity components are truncated.
 
 ! === module MOM_barotropic ===
 BOUND_BT_CORRECTION = True      !   [Boolean] default = False
@@ -399,6 +395,15 @@ BOUND_BT_CORRECTION = True      !   [Boolean] default = False
                                 ! limited to values that require less than maxCFL_BT_cont to be accommodated.
 DYNAMIC_SURFACE_PRESSURE = True !   [Boolean] default = False
                                 ! If true, add a dynamic pressure due to a viscous ice shelf, for instance.
+BT_STRONG_DRAG = True           !   [Boolean] default = False
+                                ! If true, use a stronger estimate of the retarding effects of strong bottom
+                                ! drag, by making it implicit with the barotropic time-step instead of implicit
+                                ! with the baroclinic time-step and dividing by the number of barotropic steps.
+RESCALE_STRONG_DRAG = True      !   [Boolean] default = False
+                                ! If true, reduce the barotropic contribution to the layer accelerations to
+                                ! account for the difference between the forces that can be counteracted by the
+                                ! stronger drag with BT_STRONG_DRAG and the average of the layer viscous
+                                ! remnants after a baroclinic timestep.
 BEBT = 0.2                      !   [nondim] default = 0.1
                                 ! BEBT determines whether the barotropic time stepping uses the forward-backward
                                 ! time-stepping scheme or a backward Euler scheme. BEBT is valid in the range
@@ -448,6 +453,8 @@ MAXTRUNC = 5000                 !   [truncations save_interval-1] default = 0
                                 ! The run will be stopped, and the day set to a very large value if the velocity
                                 ! is truncated more than MAXTRUNC times between energy saves.  Set MAXTRUNC to 0
                                 ! to stop if there is any truncation of velocities.
+MAXVEL = 10.0                   !   [m s-1] default = 3.0E+08
+                                ! The maximum velocity allowed before the velocity components are truncated.
 DATE_STAMPED_STDOUT = False     !   [Boolean] default = True
                                 ! If true, use dates (not times) in messages to stdout
 ENERGYSAVEDAYS = 0.125          !   [days] default = 1.0

@@ -60,6 +60,14 @@ BATHYMETRY_AT_VEL = False       !   [Boolean] default = False
                                 ! If true, there are separate values for the basin depths at velocity points.
                                 ! Otherwise the effects of topography are entirely determined from thickness
                                 ! points.
+ENABLE_BUGS_BY_DEFAULT = True   !   [Boolean] default = True
+                                ! If true, the defaults for certain recently added bug-fix flags are set to
+                                ! recreate the bugs so that the code can be moved forward without changing
+                                ! answers for existing configurations.  The defaults for groups of bug-fix flags
+                                ! are periodcially changed to correct the bugs, at which point this parameter
+                                ! will no longer be used to set their default.  Setting this to false means that
+                                ! bugs are only used if they are actively selected, but it also means that
+                                ! answers may change when code is updated due to newly found bugs.
 DT = 900.0                      !   [s]
                                 ! The (baroclinic) dynamics time step.  The time-step that is actually used will
                                 ! be an integer fraction of the forcing time-step (DT_FORCING in ocean-only mode
@@ -153,9 +161,6 @@ SURFACE_ANSWER_DATE = 99991231  ! default = 99991231
                                 ! The vintage of the expressions for the surface properties.  Values below
                                 ! 20190101 recover the answers from the end of 2018, while higher values use
                                 ! updated and more robust forms of the same expressions.
-USE_DIABATIC_TIME_BUG = False   !   [Boolean] default = False
-                                ! If true, uses the wrong calendar time for diabatic processes, as was done in
-                                ! MOM6 versions prior to February 2018. This is not recommended.
 SAVE_INITIAL_CONDS = True       !   [Boolean] default = False
                                 ! If true, write the initial conditions to a file given by IC_OUTPUT_FILE.
 IC_OUTPUT_FILE = "MOM_IC.nc"    ! default = "MOM_IC"
@@ -332,25 +337,33 @@ NK = 20                         !   [nondim]
 ! === module MOM_tracer_registry ===
 
 ! === module MOM_EOS ===
-EQN_OF_STATE = "LINEAR"         ! default = "WRIGHT"
+EQN_OF_STATE = "LINEAR"         ! default = "WRIGHT_FULL"
                                 ! EQN_OF_STATE determines which ocean equation of state should be used.
                                 ! Currently, the valid choices are "LINEAR", "UNESCO", "JACKETT_MCD", "WRIGHT",
                                 ! "WRIGHT_REDUCED", "WRIGHT_FULL", "NEMO", "ROQUET_RHO", "ROQUET_SPV" and
                                 ! "TEOS10".  This is only used if USE_EOS is true.
-RHO_TREF_SREF = 1000.0          !   [kg m-3] default = 1000.0
-                                ! When EQN_OF_STATE=LINEAR, this is the density at T=TREF, S=SREF.
-TREF = 0.0                      !   [degC] default = 0.0
+RHO_REF_LINEAR_EOS = 1000.0     !   [kg m-3] default = 1000.0
+                                ! When EQN_OF_STATE=LINEAR, this is the density at T=T_REF_LINEAR_EOS,
+                                ! S=S_REF_LINEAR_EOS and p=P_REF_LINEAR_EOS
+T_REF_LINEAR_EOS = 0.0          !   [degC] default = 0.0
                                 ! When EQN_OF_STATE=LINEAR, this is the reference temperature.
-SREF = 0.0                      !   [psu] default = 0.0
+S_REF_LINEAR_EOS = 0.0          !   [psu] default = 0.0
                                 ! When EQN_OF_STATE=LINEAR, this is the reference salinity.
+P_REF_LINEAR_EOS = 0.0          !   [Pa] default = 0.0
+                                ! When EQN_OF_STATE=LINEAR, this is the reference pressure.
 DRHO_DT = 0.0                   !   [kg m-3 K-1] default = -0.2
                                 ! When EQN_OF_STATE=LINEAR, this is the partial derivative of density with
                                 ! temperature.
 DRHO_DS = 1.0                   !   [kg m-3 ppt-1] default = 0.8
                                 ! When EQN_OF_STATE=LINEAR, this is the partial derivative of density with
                                 ! salinity.
+DRHO_DP = 0.0                   !   [s2 m-2] default = 0.0
+                                ! When EQN_OF_STATE=LINEAR, this is the partial derivative of density with
+                                ! pressure (the inverse of sound speed squared).
 RHO_T0_S0 = 1000.0              !   [kg m-3] default = 1000.0
-                                ! When EQN_OF_STATE=LINEAR, this is the density at T=0, S=0.
+                                ! When EQN_OF_STATE=LINEAR, this is the density at T=0, S=0 and p=0.  If
+                                ! RHO_TO_SO is specified, RHO_REF_LINEAR_EOS, T_REF_LINEAR_EOS, S_REF_LINEAR_EOS
+                                ! and P_REF_LINEAR_EOS are not used.
 EOS_QUADRATURE = False          !   [Boolean] default = False
                                 ! If true, always use the generic (quadrature) code code for the integrals of
                                 ! density.
@@ -367,6 +380,13 @@ DTFREEZE_DS = -0.054            !   [degC ppt-1] default = -0.054
 DTFREEZE_DP = 0.0               !   [degC Pa-1] default = 0.0
                                 ! When TFREEZE_FORM=LINEAR, this is the derivative of the freezing potential
                                 ! temperature with pressure.
+TFREEZE_S_IS_PRACS = True       !   [Boolean] default = True
+                                ! When True, the model will check if the model internal salinity is practical
+                                ! salinity.  If the model uses absolute salinity, a conversion will be applied.
+TFREEZE_T_IS_POTT = True        !   [Boolean] default = True
+                                ! When True, the model will check if the model internal temperature is potential
+                                ! temperature.  If the model uses conservative temperature, a conversion will be
+                                ! applied.
 
 ! === module MOM_restart ===
 PARALLEL_RESTARTFILES = False   !   [Boolean] default = False
@@ -493,8 +513,23 @@ ALE_COORDINATE_CONFIG = "UNIFORM" ! default = "UNIFORM"
                                 !  FNC1:string - FNC1:dz_min,H_total,power,precision
                                 !  HYBRID:string - read from a file. The string specifies
                                 !                the filename and two variable names, separated
-                                !                by a comma or space, for sigma-2 and dz. e.g.
-                                !                HYBRID:vgrid.nc,sigma2,dz
+                                !                by a comma or space, for sigma-2 and dz.
+                                !                e.g. HYBRID:vgrid.nc,sigma2,dz
+                                !  HYBRID_3D:string - read from a file. The string specifies
+                                !                the filename and two 3D variable names, separated
+                                !                by a comma or space, for sigma-2 and dz. The
+                                !                latter can be FNC1:string which is used everywhere.
+                                !                e.g. HYBRID_3D:vgrid.nc,sigma2,dz
+                                !  HYBRID_MAP:string - read from a file. The string specifies
+                                !                the filename and three variable names, separated
+                                !                by a comma or space, for map, sigma-2 and dz.
+                                !                Map is a spatial index array with, maxval(map)=N,
+                                !                and the others are 2D arrays containing N profiles.
+                                !                Map typically contains integer values, but it can
+                                !                contain real values, I+w, which imply using
+                                !                the weighted sum of profiles I and I+1.
+                                !                Dz can be FNC1:string which is used everywhere.
+                                !                e.g. HYBRID_MAP:vgrid.nc,map,sigma2,dz
 !ALE_RESOLUTION = 20*200.0      !   [m]
                                 ! The distribution of vertical resolution for the target
                                 ! grid used for Eulerian-like coordinates. For example,
@@ -662,9 +697,9 @@ ICE_SHELF_VK_CNST = 0.4         !   [nondim] default = 0.4
                                 ! Von Karman constant.
 ICE_SHELF_RC = 0.2              !   [nondim] default = 0.2
                                 ! Critical flux Richardson number for ice melt
-ICE_SHELF_BUOYANCY_FLUX_ITT_BUG = True !   [Boolean] default = True
+ICE_SHELF_BUOYANCY_FLUX_ITT_BUGFIX = True !   [Boolean] default = True
                                 ! Bug fix of buoyancy iteration
-ICE_SHELF_SALT_FLUX_ITT_BUG = True !   [Boolean] default = True
+ICE_SHELF_SALT_FLUX_ITT_BUGFIX = True !   [Boolean] default = True
                                 ! Bug fix of salt iteration
 ICE_SHELF_BUOYANCY_FLUX_ITT_THRESHOLD = 1.0E-04 !   [nondim] default = 1.0E-04
                                 ! Convergence criterion of Newton's method for ice shelf buoyancy iteration.
@@ -850,8 +885,23 @@ DIAG_COORD_DEF_Z = "WOA09"      ! default = "WOA09"
                                 !  FNC1:string - FNC1:dz_min,H_total,power,precision
                                 !  HYBRID:string - read from a file. The string specifies
                                 !                the filename and two variable names, separated
-                                !                by a comma or space, for sigma-2 and dz. e.g.
-                                !                HYBRID:vgrid.nc,sigma2,dz
+                                !                by a comma or space, for sigma-2 and dz.
+                                !                e.g. HYBRID:vgrid.nc,sigma2,dz
+                                !  HYBRID_3D:string - read from a file. The string specifies
+                                !                the filename and two 3D variable names, separated
+                                !                by a comma or space, for sigma-2 and dz. The
+                                !                latter can be FNC1:string which is used everywhere.
+                                !                e.g. HYBRID_3D:vgrid.nc,sigma2,dz
+                                !  HYBRID_MAP:string - read from a file. The string specifies
+                                !                the filename and three variable names, separated
+                                !                by a comma or space, for map, sigma-2 and dz.
+                                !                Map is a spatial index array with, maxval(map)=N,
+                                !                and the others are 2D arrays containing N profiles.
+                                !                Map typically contains integer values, but it can
+                                !                contain real values, I+w, which imply using
+                                !                the weighted sum of profiles I and I+1.
+                                !                Dz can be FNC1:string which is used everywhere.
+                                !                e.g. HYBRID_MAP:vgrid.nc,map,sigma2,dz
 
 ! === module MOM_MEKE ===
 USE_MEKE = False                !   [Boolean] default = False
@@ -890,9 +940,6 @@ BACKSCAT_EBT_POWER = 0.0        !   [nondim] default = 0.0
 BS_USE_SQG_STRUCT = False       !   [Boolean] default = False
                                 ! If true, the SQG vertical structure is used for backscatter on the condition
                                 ! that BS_EBT_power=0
-SQG_EXPO = 1.0                  !   [nondim] default = 1.0
-                                ! Nondimensional exponent coeffecient of the SQG mode that is used for the
-                                ! vertical struture of diffusivities.
 KHTH_USE_EBT_STRUCT = False     !   [Boolean] default = False
                                 ! If true, uses the equivalent barotropic structure as the vertical structure of
                                 ! thickness diffusivity.
@@ -1058,6 +1105,8 @@ TIDES = False                   !   [Boolean] default = False
                                 ! If true, apply tidal momentum forcing.
 CALCULATE_SAL = False           !   [Boolean] default = False
                                 ! If true, calculate self-attraction and loading.
+USE_HA = False                  !   [Boolean] default = False
+                                ! If true, perform inline harmonic analysis.
 BE = 0.7                        !   [nondim] default = 0.6
                                 ! If SPLIT is true, BE determines the relative weighting of a  2nd-order
                                 ! Runga-Kutta baroclinic time stepping scheme (0.5) and a backward Euler scheme
@@ -1077,18 +1126,23 @@ SPLIT_BOTTOM_STRESS = False     !   [Boolean] default = False
 BT_USE_LAYER_FLUXES = True      !   [Boolean] default = True
                                 ! If true, use the summed layered fluxes plus an adjustment due to the change in
                                 ! the barotropic velocity in the barotropic continuity equation.
+BT_ADJ_CORR_MASS_SRC = True     !   [Boolean] default = True
+                                ! If true, recalculates the barotropic mass source after predictor step. This
+                                ! should make little difference in the deep ocean but appears to help for
+                                ! vanished layers. If false, uses the same mass source as from the predictor
+                                ! step.
 STORE_CORIOLIS_ACCEL = True     !   [Boolean] default = True
                                 ! If true, calculate the Coriolis accelerations at the end of each timestep for
                                 ! use in the predictor step of the next split RK2 timestep.
 FPMIX = False                   !   [Boolean] default = False
                                 ! If true, add non-local momentum flux increments and diffuse down the Eulerian
                                 ! gradient.
-VISC_REM_BUG = True             !   [Boolean] default = True
+VISC_REM_BUG = False            !   [Boolean] default = False
                                 ! If true, visc_rem_[uv] in split mode is incorrectly calculated or accounted
                                 ! for in two places. This parameter controls the defaults of two individual
                                 ! flags, VISC_REM_TIMESTEP_BUG in MOM_dynamics_split_RK2(b) and
                                 ! VISC_REM_BT_WEIGHT_BUG in MOM_barotropic.
-VISC_REM_TIMESTEP_BUG = True    !   [Boolean] default = True
+VISC_REM_TIMESTEP_BUG = False   !   [Boolean] default = False
                                 ! If true, recover a bug that uses dt_pred rather than dt in vertvisc_remnant()
                                 ! at the end of predictor stage for the following continuity() and btstep()
                                 ! calls in the corrector step. Default of this flag is set by VISC_REM_BUG
@@ -1153,6 +1207,9 @@ CORIOLIS_SCHEME = "SADOURNY75_ENERGY" ! default = "SADOURNY75_ENERGY"
                                 !    ARAKAWA_LAMB81    - Arakawa & Lamb, 1981; En. + Enst.
                                 !    ARAKAWA_LAMB_BLEND - A blend of Arakawa & Lamb with
                                 !                         Arakawa & Hsu and Sadourny energy
+                                !    WENOVI5TH_PV_ENSTRO   - 5th-order WENO PV enstrophy
+                                !    WENOVI3RD_PV_ENSTRO   - 3rd-order WENO PV enstrophy
+                                !    WENOVI7TH_PV_ENSTRO  - 7th-order WENO PV enstrophy
 BOUND_CORIOLIS = True           !   [Boolean] default = False
                                 ! If true, the Coriolis terms at u-points are bounded by the four estimates of
                                 ! (f+rv)v from the four neighboring v-points, and similarly at v-points.  This
@@ -1161,7 +1218,7 @@ BOUND_CORIOLIS = True           !   [Boolean] default = False
 KE_SCHEME = "KE_ARAKAWA"        ! default = "KE_ARAKAWA"
                                 ! KE_SCHEME selects the discretization for acceleration due to the kinetic
                                 ! energy gradient. Valid values are:
-                                !    KE_ARAKAWA, KE_SIMPLE_GUDONOV, KE_GUDONOV
+                                !    KE_ARAKAWA, KE_SIMPLE_GUDONOV, KE_GUDONOV, KE_UP3
 PV_ADV_SCHEME = "PV_ADV_CENTERED" ! default = "PV_ADV_CENTERED"
                                 ! PV_ADV_SCHEME selects the discretization for PV advection. Valid values are:
                                 !    PV_ADV_CENTERED - centered (aka Sadourny, 75)
@@ -1233,6 +1290,9 @@ USE_ZB2020 = False              !   [Boolean] default = False
                                 ! mesoscale eddies.
 
 ! === module MOM_hor_visc ===
+USE_CIRCULATION_IN_HORVISC = False !   [Boolean] default = False
+                                ! Use circulation theorem to compute vorticity in horvisc module (for ZB20 or
+                                ! Leith)
 USE_CONT_THICKNESS = False      !   [Boolean] default = False
                                 ! If true, use thickness at velocity points from continuity solver. This option
                                 ! currently only works with split mode.
@@ -1255,9 +1315,6 @@ LEITH_KH = False                !   [Boolean] default = False
                                 ! If true, use a Leith nonlinear eddy viscosity.
 BOUND_KH = True                 !   [Boolean] default = True
                                 ! If true, the Laplacian coefficient is locally limited to be stable.
-BETTER_BOUND_KH = True          !   [Boolean] default = True
-                                ! If true, the Laplacian coefficient is locally limited to be stable with a
-                                ! better bounding than just BOUND_KH.
 EY24_EBT_BS = False             !   [Boolean] default = False
                                 ! If true, use the the backscatter scheme (EBT mode with kill switch)developed
                                 ! by Yankovsky et al. (2024).
@@ -1282,7 +1339,7 @@ HORVISC_BOUND_COEF = 0.8        !   [nondim] default = 0.8
 USE_KH_BG_2D = False            !   [Boolean] default = False
                                 ! If true, read a file containing 2-d background harmonic viscosities. The final
                                 ! viscosity is the maximum of the other terms and this background value.
-FRICTWORK_BUG = True            !   [Boolean] default = True
+FRICTWORK_BUG = False           !   [Boolean] default = False
                                 ! If true, retain an answer-changing bug in calculating the FrictWork, which
                                 ! cancels the h in thickness flux and the h at velocity point. This isnot
                                 ! recommended.
@@ -1332,10 +1389,6 @@ KV_ML_INVZ2 = 0.0               !   [m2 s-1] default = 0.0
                                 ! from the surface, to allow for finite wind stresses to be transmitted through
                                 ! infinitesimally thin surface layers.  This is an older option for numerical
                                 ! convenience without a strong physical basis, and its use is now discouraged.
-MAXVEL = 10.0                   !   [m s-1] default = 3.0E+08
-                                ! The maximum velocity allowed before the velocity components are truncated.
-CFL_BASED_TRUNCATIONS = True    !   [Boolean] default = True
-                                ! If true, base truncations on the CFL number, and not an absolute speed.
 CFL_TRUNCATE = 0.5              !   [nondim] default = 0.5
                                 ! The value of the CFL number that will cause velocity components to be
                                 ! truncated; instability can occur past 0.5.
@@ -1404,7 +1457,7 @@ BAROTROPIC_ANSWER_DATE = 99991231 ! default = 99991231
                                 ! The vintage of the expressions in the barotropic solver. Values below 20190101
                                 ! recover the answers from the end of 2018, while higher values use more
                                 ! efficient or general expressions.
-VISC_REM_BT_WEIGHT_BUG = True   !   [Boolean] default = True
+VISC_REM_BT_WEIGHT_BUG = False  !   [Boolean] default = False
                                 ! If true, recover a bug in barotropic solver that uses an unnormalized weight
                                 ! function for vertical averages of baroclinic velocity and forcing. Default of
                                 ! this flag is set by VISC_REM_BUG.
@@ -1476,6 +1529,11 @@ DTBT = 10.0                     !   [s or nondim] default = -0.98
 BT_USE_OLD_CORIOLIS_BRACKET_BUG = False !   [Boolean] default = False
                                 ! If True, use an order of operations that is not bitwise rotationally symmetric
                                 ! in the meridional Coriolis term of the barotropic solver.
+MASK_COASTAL_PRESSURE_FORCE = False !   [Boolean] default = False
+                                ! If true, use the land masks to zero out the diagnosed barotropic pressure
+                                ! gradient accelerations at coastal or land points.  This changes diagnostics
+                                ! and improves the reproducibility of certain debugging checksums, but it does
+                                ! not alter the solutions themselves.
 
 ! === module MOM_mixed_layer_restrat ===
 MIXEDLAYER_RESTRAT = False      !   [Boolean] default = False
@@ -1553,6 +1611,9 @@ EVAP_CFL_LIMIT = 0.8            !   [nondim] default = 0.8
 MLD_EN_VALS = 25.0, 2500.0, 2.5E+05 !   [J/m2] default = 25.0, 2500.0, 2.5E+05
                                 ! The energy values used to compute MLDs.  If not set (or all set to 0.), the
                                 ! default will overwrite to 25., 2500., 250000.
+BMLD_EN_VALS = 25.0, 2500.0, 2.5E+05 !   [J/m2] default = 25.0, 2500.0, 2.5E+05
+                                ! The energy values used to compute Bottom MLDs.  If not set (or all set to 0.),
+                                ! the default will overwrite to 25., 2500., 250000.
 DIAG_MLD_DENSITY_DIFF = 0.1     !   [kg/m3] default = 0.1
                                 ! The density difference used to determine a diagnostic mixed layer depth,
                                 ! MLD_user, following the definition of Levitus 1982. The MLD is the depth at
@@ -1832,10 +1893,14 @@ MAX_ENERGY = 0.0                !   [m2 s-2] default = 0.0
                                 ! The maximum permitted average energy per unit mass; the model will be stopped
                                 ! if there is more energy than this.  If zero or negative, this is set to
                                 ! 10*MAXVEL^2.
+MAXVEL = 10.0                   !   [m s-1] default = 3.0E+08
+                                ! The maximum velocity allowed before the velocity components are truncated.
 ENERGYFILE = "ocean.stats"      ! default = "ocean.stats"
                                 ! The file to use to write the energies and globally summed diagnostics.
 DATE_STAMPED_STDOUT = False     !   [Boolean] default = True
                                 ! If true, use dates (not times) in messages to stdout
+ISO_DATE_STAMPED_STDOUT = False !   [Boolean] default = False
+                                ! If true, use ISO formatted dates in messages to stdout
 TIMEUNIT = 8.64E+04             !   [s] default = 8.64E+04
                                 ! The time unit in seconds a number of input fields
 READ_DEPTH_LIST = False         !   [Boolean] default = False

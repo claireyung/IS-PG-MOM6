@@ -1,6 +1,9 @@
 ! Blank file in which we can put "overrides" for parameters
-#override ICE_THICKNESS_FILE = "Ocean1_3D.nc"
-#override SURFACE_PRESSURE_FILE = "Ocean1_3D.nc"
+!#override ICE_THICKNESS_FILE = "Ocean1_3D.nc"
+!#override SURFACE_PRESSURE_FILE = "Ocean1_3D.nc"
+#override ICE_THICKNESS_FILE = "Ocean0_3D_Claire.nc"
+#override SURFACE_PRESSURE_FILE = "Ocean0_3D_Claire.nc"
+
 
 ! Change vertical coordinate
 #override REGRIDDING_COORDINATE_MODE = "ZSTAR"
@@ -9,10 +12,10 @@
 #override MINIMUM_FORCING_DEPTH = 1
 
 ! Eliminate melting when ocean thickness too thin
-!#override COL_THICK_MELT_THRESHOLD = 1.0
+#override COL_THICK_MELT_THRESHOLD = 1.0
 
 ! Recommended pressure gradient ice shelf fixes
-!#override MASS_WEIGHT_IN_PRESSURE_GRADIENT_TOP = True
+#override MASS_WEIGHT_IN_PRESSURE_GRADIENT_TOP = False ! True
 !#override RESET_INTXPA_INTEGRAL = True
 !#override MASS_WEIGHT_IN_PGF_VANISHED_ONLY = True
 !#override RESET_INTXPA_INTEGRAL_FLATTEST = True
@@ -39,7 +42,7 @@
 !#override USTAR_SHELF_BG = 0.0001
 
 !#override DIABATIC_FIRST = True
-#override KD = 1.0E-2
+#override KD = 1.0E-2 ! 1.0E-2
 #override KHTR = 1.0E-2
 
 !FIXED_DEPTH_LOTW_ML = True
@@ -71,3 +74,16 @@ DTFREEZE_DP = -7.53E-08         !   [deg C Pa-1] default = 0.0
                                 ! When TFREEZE_FORM=LINEAR,
                                 ! this is the derivative of the freezing potential
                                 ! temperature with pressure.
+!#override RESCALE_STRONG_DRAG = True
+!#override BT_STRONG_DRAG = True
+!#override PRESSURE_RECONSTRUCTION_SCHEME = 2
+
+!#override REMAP_BOUNDARY_EXTRAP = True
+!#override REMAPPING_ANSWER_DATE = 20181231 
+ 
+!#override ENABLE_BUGS_BY_DEFAULT = False
+!#override BT_ADJ_CORR_MASS_SRC = False
+#override VISC_REM_BUG = True
+#override VISC_REM_TIMESTEP_BUG = True
+#override FRICTWORK_BUG = True
+#override DT = 100

@@ -120,7 +120,7 @@ NK = 25                         !   [nondim]
                                 ! The number of model layers.
 
 ! === module MOM_EOS ===
-EQN_OF_STATE = "LINEAR"         ! default = "WRIGHT"
+EQN_OF_STATE = "LINEAR"         ! default = "WRIGHT_FULL"
                                 ! EQN_OF_STATE determines which ocean equation of state should be used.
                                 ! Currently, the valid choices are "LINEAR", "UNESCO", "JACKETT_MCD", "WRIGHT",
                                 ! "WRIGHT_REDUCED", "WRIGHT_FULL", "NEMO", "ROQUET_RHO", "ROQUET_SPV" and
@@ -132,7 +132,9 @@ DRHO_DS = 0.805876093           !   [kg m-3 ppt-1] default = 0.8
                                 ! When EQN_OF_STATE=LINEAR, this is the partial derivative of density with
                                 ! salinity.
 RHO_T0_S0 = 999.9106806711001   !   [kg m-3] default = 1000.0
-                                ! When EQN_OF_STATE=LINEAR, this is the density at T=0, S=0.
+                                ! When EQN_OF_STATE=LINEAR, this is the density at T=0, S=0 and p=0.  If
+                                ! RHO_TO_SO is specified, RHO_REF_LINEAR_EOS, T_REF_LINEAR_EOS, S_REF_LINEAR_EOS
+                                ! and P_REF_LINEAR_EOS are not used.
 TFREEZE_S0_P0 = 0.0832          !   [degC] default = 0.0
                                 ! When TFREEZE_FORM=LINEAR, this is the freezing potential temperature at S=0,
                                 ! P=0.
@@ -243,7 +245,7 @@ CDRAG_SHELF = 0.0025            !   [nondim] default = 0.003
 ICE_PROFILE_CONFIG = "FILE"     !
                                 ! This specifies how the initial ice profile is specified. Valid values are:
                                 ! CHANNEL, FILE, and USER.
-ICE_THICKNESS_FILE = "Ocean1_3D.nc" ! default = "ice_shelf_h.nc"
+ICE_THICKNESS_FILE = "Ocean0_3D_Claire.nc" ! default = "ice_shelf_h.nc"
                                 ! The file from which the bathymetry is read.
 ICE_THICKNESS_VARNAME = "thick" ! default = "h_shelf"
                                 ! The name of the thickness variable in ICE_THICKNESS_FILE.
@@ -306,7 +308,7 @@ TRIM_IC_FOR_P_SURF = True       !   [Boolean] default = False
                                 ! If true, cuts way the top of the column for initial conditions at the depth
                                 ! where the hydrostatic pressure matches the imposed surface pressure which is
                                 ! read from file.
-SURFACE_PRESSURE_FILE = "Ocean1_3D.nc" !
+SURFACE_PRESSURE_FILE = "Ocean0_3D_Claire.nc" !
                                 ! The initial condition file for the surface pressure exerted by ice.
 SURFACE_PRESSURE_VAR = "thick"  ! default = ""
                                 ! The initial condition variable for the surface pressure exerted by ice.
@@ -356,6 +358,11 @@ BE = 0.7                        !   [nondim] default = 0.6
                                 ! (1) that is used for the Coriolis and inertial terms.  BE may be from 0.5 to
                                 ! 1, but instability may occur near 0.5. BE is also applicable if SPLIT is false
                                 ! and USE_RK2 is true.
+VISC_REM_BUG = True             !   [Boolean] default = False
+                                ! If true, visc_rem_[uv] in split mode is incorrectly calculated or accounted
+                                ! for in two places. This parameter controls the defaults of two individual
+                                ! flags, VISC_REM_TIMESTEP_BUG in MOM_dynamics_split_RK2(b) and
+                                ! VISC_REM_BT_WEIGHT_BUG in MOM_barotropic.
 
 ! === module MOM_continuity_PPM ===
 ETA_TOLERANCE = 1.0E-12         !   [m] default = 1.25E-11
@@ -382,10 +389,6 @@ BOUND_CORIOLIS = True           !   [Boolean] default = False
 MASS_WEIGHT_IN_PRESSURE_GRADIENT = True !   [Boolean] default = False
                                 ! If true, use mass weighting when interpolating T/S for integrals near the
                                 ! bathymetry in FV pressure gradient calculations.
-MASS_WEIGHT_IN_PRESSURE_GRADIENT_TOP = True !   [Boolean] default = False
-                                ! If true and MASS_WEIGHT_IN_PRESSURE_GRADIENT is true, use mass weighting when
-                                ! interpolating T/S for integrals near the top of the water column in FV
-                                ! pressure gradient calculations.
 MASS_WEIGHT_IN_PGF_VANISHED_ONLY = True !   [Boolean] default = False
                                 ! If true, use mass weighting when interpolating T/S for integrals only if one
                                 ! side is vanished according to RESET_INTXPA_H_NONVANISHED.
@@ -407,8 +410,19 @@ AH_VEL_SCALE = 0.001            !   [m s-1] default = 0.0
                                 ! scaled viscosity, the Smagorinsky and Leith viscosities, and AH.
 SMAGORINSKY_AH = True           !   [Boolean] default = False
                                 ! If true, use a biharmonic Smagorinsky nonlinear eddy viscosity.
+BACKSCATTER_UNDERBOUND = True   !   [Boolean] default = False
+                                ! If true, the bounds on the biharmonic viscosity are allowed to increase where
+                                ! the Laplacian viscosity is negative (due to backscatter parameterizations)
+                                ! beyond the largest timestep-dependent stable values of biharmonic viscosity
+                                ! when no Laplacian viscosity is applied.  The default is true for historical
+                                ! reasons, but this option probably should not be used because it can contribute
+                                ! to numerical instabilities.
 SMAG_BI_CONST = 0.06            !   [nondim] default = 0.0
                                 ! The nondimensional biharmonic Smagorinsky constant, typically 0.015 - 0.06.
+FRICTWORK_BUG = True            !   [Boolean] default = False
+                                ! If true, retain an answer-changing bug in calculating the FrictWork, which
+                                ! cancels the h in thickness flux and the h at velocity point. This isnot
+                                ! recommended.
 
 ! === module MOM_vert_friction ===
 HARMONIC_BL_SCALE = 1.0         !   [nondim] default = 0.0
@@ -418,8 +432,6 @@ HARMONIC_BL_SCALE = 1.0         !   [nondim] default = 0.0
 HMIX_FIXED = 20.0               !   [m]
                                 ! The prescribed depth over which the near-surface viscosity and diffusivity are
                                 ! elevated when the bulk mixed layer is not used.
-MAXVEL = 10.0                   !   [m s-1] default = 3.0E+08
-                                ! The maximum velocity allowed before the velocity components are truncated.
 
 ! === module MOM_barotropic ===
 BOUND_BT_CORRECTION = True      !   [Boolean] default = False
@@ -500,6 +512,8 @@ MAXTRUNC = 5000                 !   [truncations save_interval-1] default = 0
                                 ! The run will be stopped, and the day set to a very large value if the velocity
                                 ! is truncated more than MAXTRUNC times between energy saves.  Set MAXTRUNC to 0
                                 ! to stop if there is any truncation of velocities.
+MAXVEL = 10.0                   !   [m s-1] default = 3.0E+08
+                                ! The maximum velocity allowed before the velocity components are truncated.
 DATE_STAMPED_STDOUT = False     !   [Boolean] default = True
                                 ! If true, use dates (not times) in messages to stdout
 ENERGYSAVEDAYS = 0.125          !   [days] default = 1.0
