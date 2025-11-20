@@ -19,7 +19,7 @@ Key testing things were the use of `MASS_WEIGHT_IN_PRESSURE_GRADIENT` and correc
 
 Also ran 2D triangular ice shelf cases (`iceshelf`) and z-coordinate ISOMIP+ cases (`z-ISOMIP-quiet` without melt, `MOM6-examples-z` and `MOM6-examples-z-noMWIPG` with melt)
 
-MOM6 version used is here: https://github.com/claireyung/MOM6/releases/tag/CYPGv1. Some small modifications from main to add perfect sigma initialisation (only required near grounded ice), add diagnostics for the manuscript plots and fix a small bug.
+MOM6 version used is here: https://github.com/claireyung/MOM6/releases/tag/CYPGv2. Some small modifications from main to add perfect sigma initialisation (only required near grounded ice), add diagnostics for the manuscript plots and fix a small bug.
 
 To run, a compiled version of MOM6 is required. Since the model domain is mostly 2D (and a few short 3D idealised runs), I ran on on a MacBook using the instructions in https://github.com/NOAA-GFDL/MOM6-examples/wiki/Compiling-on-MacBook-M1-chip-using-conda-environment. I saved this folder in [`MOM6-examples/ocean-only/ISOMIP` ](https://github.com/NOAA-GFDL/MOM6-examples) so to run I use 
 ```
