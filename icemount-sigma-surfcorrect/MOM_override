@@ -35,11 +35,11 @@ SURFACE_PRESSURE_SCALE = 8820.0 !   [file dependent] default = 1.0
 ! increase drag in min thickness layers
 #override DRAG_BG_VEL_SHELF = 0.05
 
-! MWIPG = False for SIGMA coords
+! MWIPG = False
 !#override MASS_WEIGHT_IN_PRESSURE_GRADIENT = True !  False
 !#override MASS_WEIGHT_IN_PRESSURE_GRADIENT_IS = False !True
 
-! initialise properly (NB this exe has a hardcoded fix. Better to use Alistair's.)
+! initialise properly
 #override REMAP_BOUNDARY_EXTRAP = False
 #override INIT_BOUNDARY_EXTRAP = True
 #override TRIMMING_USES_REMAPPING = True
@@ -48,4 +48,4 @@ SURFACE_PRESSURE_SCALE = 8820.0 !   [file dependent] default = 1.0
 ! PG correction turned on
 #override CORRECTION_INTXPA = True
 !#override CORRECTION_INTXPA_5PT = True
-!#override RESET_INTXPA_INTEGRAL = True !reqs CORRECTION_INTXPA = True if interior coord is slanted!
+!#override RESET_INTXPA_INTEGRAL = True

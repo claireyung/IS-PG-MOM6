@@ -373,7 +373,7 @@ DIRECT_STRESS = True            !   [Boolean] default = False
                                 ! If true, the wind stress is distributed over the topmost HMIX_STRESS of fluid
                                 ! (like in HYCOM), and an added mixed layer viscosity or a physically based
                                 ! boundary layer turbulence parameterization is not needed for stability.
-HARMONIC_BL_SCALE = 10.0        !   [nondim] default = 0.0
+HARMONIC_BL_SCALE = 1.0         !   [nondim] default = 0.0
                                 ! A scale to determine when water is in the boundary layers based solely on
                                 ! harmonic mean thicknesses for the purpose of determining the extent to which
                                 ! the thicknesses used in the viscosities are upwinded.

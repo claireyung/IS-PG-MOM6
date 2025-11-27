@@ -1387,7 +1387,7 @@ VON_KARMAN_CONST = 0.41         !   [nondim] default = 0.41
 HARMONIC_VISC = False           !   [Boolean] default = False
                                 ! If true, use the harmonic mean thicknesses for calculating the vertical
                                 ! viscosity.
-HARMONIC_BL_SCALE = 10.0        !   [nondim] default = 0.0
+HARMONIC_BL_SCALE = 1.0         !   [nondim] default = 0.0
                                 ! A scale to determine when water is in the boundary layers based solely on
                                 ! harmonic mean thicknesses for the purpose of determining the extent to which
                                 ! the thicknesses used in the viscosities are upwinded.

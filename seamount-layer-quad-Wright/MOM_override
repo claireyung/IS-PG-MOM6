@@ -1,7 +1,4 @@
 
-!#override USE_REGRIDDING = True
-!#override REGRIDDING_COORDINATE_MODE = "ZSTAR"! "SIGMA"!ZSTAR"! "ZSTAR"! "ZSTAR"!"RHO"!SIGMA"!ZSTAR"! "ZSTAR" 
-!#override REMAPPING_SCHEME = "PPM_IH4"
 ! turn on to use layer
 #override T_REF = -1.9                    !   [degC]
 #override FIT_SALINITY = True             ! If true, accept the prescribed temperature and fit the
@@ -48,14 +45,14 @@ SURFACE_PRESSURE_SCALE = 8820.0 !   [file dependent] default = 1.0
 !#override MASS_WEIGHT_IN_PRESSURE_GRADIENT = True !  False
 !#override MASS_WEIGHT_IN_PRESSURE_GRADIENT_IS = False !True
 
-! initialise properly (NB this exe has a hardcoded fix. Better to use Alistair's.)
+! initialise properly
 #override REMAP_BOUNDARY_EXTRAP = False
 #override INIT_BOUNDARY_EXTRAP = True
 #override TRIMMING_USES_REMAPPING = True
 #override TRIM_IC_Z_TOLERANCE = 1.e-14
 
 ! PG correction turned on
-#override CORRECTION_INTXPA = True
+!#override CORRECTION_INTXPA = True
 !#override CORRECTION_INTXPA_5PT = True
-#override RESET_INTXPA_INTEGRAL = True !reqs CORRECTION_INTXPA = True if interior coord is slanted!
+#override RESET_INTXPA_INTEGRAL = True
 #override EQN_OF_STATE = "WRIGHT"

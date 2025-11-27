@@ -343,6 +343,12 @@ BOUND_CORIOLIS = True           !   [Boolean] default = False
 MASS_WEIGHT_IN_PRESSURE_GRADIENT = True !   [Boolean] default = False
                                 ! If true, use mass weighting when interpolating T/S for integrals near the
                                 ! bathymetry in FV pressure gradient calculations.
+MASS_WEIGHT_IN_PGF_VANISHED_ONLY = True !   [Boolean] default = False
+                                ! If true, use mass weighting when interpolating T/S for integrals only if one
+                                ! side is vanished according to RESET_INTXPA_H_NONVANISHED.
+RESET_INTXPA_INTEGRAL = True    !   [Boolean] default = False
+                                ! If true, reset INTXPA to match pressures at first nonvanished cell. Includes
+                                ! pressure correction.
 PRESSURE_RECONSTRUCTION_SCHEME = 2 ! default = 1
                                 ! Order of vertical reconstruction of T/S to use in the integrals within the FV
                                 ! pressure gradient calculation.

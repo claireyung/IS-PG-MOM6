@@ -1271,15 +1271,12 @@ MASS_WEIGHT_IN_PGF_VANISHED_ONLY = False !   [Boolean] default = False
                                 ! side is vanished according to RESET_INTXPA_H_NONVANISHED.
 CORRECTION_INTXPA = True        !   [Boolean] default = False
                                 ! If true, use a correction for surface pressure curvature in intx_pa.
-RESET_INTXPA_INTEGRAL = True    !   [Boolean] default = False
+RESET_INTXPA_INTEGRAL = False   !   [Boolean] default = False
                                 ! If true, reset INTXPA to match pressures at first nonvanished cell. Includes
                                 ! pressure correction.
 RESET_INTXPA_INTEGRAL_FLATTEST = False !   [Boolean] default = False
                                 ! If true, use flattest interface as reference interface where there is no
                                 ! better choice for RESET_INTXPA_INTEGRAL. Otherwise, use surface interface.
-RESET_INTXPA_H_NONVANISHED = 1.0E-06 !   [m] default = 1.0E-06
-                                ! A minimal layer thickness that indicates that a layer is thick enough to
-                                ! usefully reestimate the pressure integral across the interface below.
 USE_INACCURATE_PGF_RHO_ANOM = False !   [Boolean] default = False
                                 ! If true, use a form of the PGF that uses the reference density in an
                                 ! inaccurate way. This is not recommended.

@@ -1,6 +1,4 @@
 ! Blank file in which we can put "overrides" for parameters
-!#override ICE_THICKNESS_FILE = "Ocean1_3D.nc"
-!#override SURFACE_PRESSURE_FILE = "Ocean1_3D.nc"
 #override ICE_THICKNESS_FILE = "Ocean0_3D_Claire.nc"
 #override SURFACE_PRESSURE_FILE = "Ocean0_3D_Claire.nc"
 
@@ -45,18 +43,7 @@
 #override KD = 1.0E-2 ! 1.0E-2
 #override KHTR = 1.0E-2
 
-!FIXED_DEPTH_LOTW_ML = True
-!LOTW_VISCOUS_ML_FLOOR = True
-!#override FRAZIL = True
-!#override PRESSURE_DEPENDENT_FRAZIL = True
 #override ANGSTROM = 1e-12
-!#override BOUND_SALINITY = True
-!#override MIN_THICKNESS = 1e-4
-!#override MIX_BOUNDARY_TRACER_ALE = True
-!#override MASSLESS_MATCH_TARGETS = False
-!#override HARMONIC_BL_SCALE = 20
-!#override DYNAMIC_SURFACE_PRESSURE = False
-!#override BOUNDARY_EXTRAPOLATION = False
 
 #override TFREEZE_FORM = "LINEAR"         ! default = "LINEAR"
                                 ! TFREEZE_FORM determines which expression should be
@@ -74,15 +61,7 @@ DTFREEZE_DP = -7.53E-08         !   [deg C Pa-1] default = 0.0
                                 ! When TFREEZE_FORM=LINEAR,
                                 ! this is the derivative of the freezing potential
                                 ! temperature with pressure.
-!#override RESCALE_STRONG_DRAG = True
-!#override BT_STRONG_DRAG = True
-!#override PRESSURE_RECONSTRUCTION_SCHEME = 2
 
-!#override REMAP_BOUNDARY_EXTRAP = True
-!#override REMAPPING_ANSWER_DATE = 20181231 
- 
-!#override ENABLE_BUGS_BY_DEFAULT = False
-!#override BT_ADJ_CORR_MASS_SRC = False
 #override VISC_REM_BUG = True
 #override VISC_REM_TIMESTEP_BUG = True
 #override FRICTWORK_BUG = True
