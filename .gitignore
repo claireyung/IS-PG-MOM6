@@ -26,6 +26,7 @@ icemount-z-reset-quad-nkx4/*
 MOM6-examples-z-noMWIPG/*.nc
 MOM6-examples-z/*.nc
 z-ISOMIP-quiet/*.nc
+z-ISOMIP-quiet-quad/*.nc
 */U_velocity_truncations
 */V_velocity_truncations
 */available_diags.000000
@@ -36,6 +37,12 @@ z-ISOMIP-quiet/ISOMIP.ipynb
 z-ISOMIP-quiet/archive/
 z-ISOMIP-quiet/rayleigh-check.ipynb
 z-ISOMIP-quiet/saltanomcheck.ipynb
+z-ISOMIP-quiet-quad/.ipynb_checkpoints/
+z-ISOMIP-quiet-quad/INPUT/.DS_Store
+z-ISOMIP-quiet-quad/ISOMIP.ipynb
+z-ISOMIP-quiet-quad/archive/
+z-ISOMIP-quiet-quad/rayleigh-check.ipynb
+z-ISOMIP-quiet-quad/saltanomcheck.ipynb
 TESTING/*
 INPUT2/*
 MOM6-exe-d259aed

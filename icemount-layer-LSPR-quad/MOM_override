@@ -2,6 +2,7 @@
 ! turn on to use layer
 #override T_REF = -1.9                    !   [degC]
 #override FIT_SALINITY = True             ! If true, accept the prescribed temperature and fit the
+
 ! modify minthick
 #override MIN_THICKNESS = 1E-12 !3 !12 !3 !12 !3 !12
 
@@ -18,7 +19,8 @@ ICE_AREA_VARNAME = "Ah"       ! default = "area_shelf_h"
 
 !#override TS_CONFIG = "ISOMIP"
 #override TS_CONFIG = "TS_profile"
-#override TS_FILE = "quadraticSalticemountz1D.nc"
+!#override TS_FILE = "quadraticSalticemountz1D.nc"
+#override TS_FILE = "quadraticSalticemountlayer1D.nc"
 #override PRESSURE_RECONSTRUCTION_SCHEME = 2
 
 #override ICE_SHELF = True

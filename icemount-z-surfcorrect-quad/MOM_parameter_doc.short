@@ -178,6 +178,15 @@ REMAPPING_SCHEME = "PPM_IH4"    ! default = "PLM"
 INIT_BOUNDARY_EXTRAP = True     !   [Boolean] default = False
                                 ! If true, values at the interfaces of boundary cells are extrapolated instead
                                 ! of piecewise constant during initialization.Defaults to REMAP_BOUNDARY_EXTRAP.
+REMAPPING_USE_OM4_SUBCELLS = False !   [Boolean] default = True
+                                ! This selects the remapping algorithm used in OM4 that does not use the full
+                                ! reconstruction for the top- and lower-most sub-layers, but instead assumes
+                                ! they are always vanished (untrue) and so just uses their edge values. We
+                                ! recommend setting this option to false.
+REMAP_AFTER_INITIALIZATION = False !   [Boolean] default = True
+                                ! If true, applies regridding and remapping immediately after initialization so
+                                ! that the state is ALE consistent. This is a legacy step and should not be
+                                ! needed if the initialization is consistent with the coordinate mode.
 
 ! === module MOM_domains min_halo ===
 
@@ -204,7 +213,7 @@ ICE_AREA_VARNAME = "Ah"         ! default = "area_shelf_h"
                                 ! The name of the area variable in ICE_THICKNESS_FILE.
 
 ! === module MOM_state_initialization ===
-THICKNESS_CONFIG = "ISOMIP"     ! default = "uniform"
+THICKNESS_CONFIG = "thickness_file" ! default = "uniform"
                                 ! A string that determines how the initial layer thicknesses are specified for a
                                 ! new run:
                                 !     file - read interface heights from the file specified
@@ -235,7 +244,9 @@ THICKNESS_CONFIG = "ISOMIP"     ! default = "uniform"
                                 !     soliton - Equatorial Rossby soliton.
                                 !     rossby_front - a mixed layer front in thermal wind balance.
                                 !     USER - call a user modified routine.
-TS_CONFIG = "TS_profile"        !
+THICKNESS_FILE = "thickness_pfile_from_prog.nc" !
+                                ! The name of the thickness file.
+TS_CONFIG = "file"              !
                                 ! A string that determines how the initial temperatures and salinities are
                                 ! specified for a new run:
                                 !     file - read velocities from the file specified
@@ -255,24 +266,10 @@ TS_CONFIG = "TS_profile"        !
                                 !     rossby_front - a mixed layer front in thermal wind balance.
                                 !     SCM_CVMix_tests - used in the SCM CVMix tests.
                                 !     USER - call a user modified routine.
-TS_FILE = "quadraticSalticemountz1D.nc" !
-                                ! The file with the reference profiles for temperature and salinity.
-TRIM_IC_FOR_P_SURF = True       !   [Boolean] default = False
-                                ! If true, cuts way the top of the column for initial conditions at the depth
-                                ! where the hydrostatic pressure matches the imposed surface pressure which is
-                                ! read from file.
-SURFACE_PRESSURE_FILE = "fatseamountice.nc" !
-                                ! The initial condition file for the surface pressure exerted by ice.
-SURFACE_PRESSURE_VAR = "D"      ! default = ""
-                                ! The initial condition variable for the surface pressure exerted by ice.
-SURFACE_PRESSURE_SCALE = 8820.0 !   [file dependent] default = 1.0
-                                ! A scaling factor to convert SURFACE_PRESSURE_VAR from file
-                                ! SURFACE_PRESSURE_FILE into a surface pressure.
-TRIM_IC_Z_TOLERANCE = 1.0E-10   !   [m] default = 1.0E-05
-                                ! The tolerance with which to find the depth matching the specified surface
-                                ! pressure with TRIM_IC_FOR_P_SURF.
-TRIMMING_USES_REMAPPING = True  !   [Boolean] default = False
-                                ! When trimming the column, also remap T and S.
+TS_FILE = "quadraticSalticemountz_fromprog.nc" !
+                                ! The initial condition file for temperature.
+HACK_MODE = True                !   [Boolean] default = False
+                                ! HACK MODE
 
 ! === module MOM_diag_mediator ===
 

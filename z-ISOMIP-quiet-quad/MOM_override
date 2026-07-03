@@ -1,0 +1,59 @@
+! Blank file in which we can put "overrides" for parameters
+#override DAYMAX = 5.0
+#override TRIMMING_USES_REMAPPING = True
+#override USE_REGRIDDING = True
+#override REGRIDDING_COORDINATE_MODE = ZSTAR !  SIGMA_SHELF_ZSTAR !SIGMA !SIGMA_SHELF_ZSTAR
+#override REMAPPING_SCHEME = "PPM_IH4" !!
+!#override TS_CONFIG = "ISOMIP"
+!#override THICKNESS_CONFIG = "ISOMIP" !!
+ICE_SHELF_INITIALIZATION_Z_TOLERANCE = 1.0E-14
+TRIM_IC_Z_TOLERANCE = 1.e-10 !!
+DRAG_BG_VEL_SHELF = 0.05 !!
+
+!#override CORRECTION_INTXPA = True
+#override RESET_INTXPA_INTEGRAL = True
+
+#override REMAP_BOUNDARY_EXTRAP = False
+#override INIT_BOUNDARY_EXTRAP = True
+
+#override MASS_WEIGHT_IN_PRESSURE_GRADIENT = True !False
+#override MASS_WEIGHT_IN_PRESSURE_GRADIENT_TOP = True
+
+#override HARMONIC_BL_SCALE = 1.0 
+
+#override REMAPPING_USE_OM4_SUBCELLS = False
+#override DIAG_REMAPPING_USE_OM4_SUBCELLS = False
+
+#override LINEAR_DRAG = True
+#override DRAG_BG_VEL = 0.05
+#override GUST_CONST = 0.0
+#override DRAG_BG_VEL_SHELF = 0.05
+#override SHELF_THREE_EQN = True
+
+#override RHO_0 = 1035
+#override BIHARMONIC = False
+#override SMAGORISNKY_AH = False
+
+#override ICE_THICKNESS_FILE = "Ocean0_3D_Claire.nc"
+#override SURFACE_PRESSURE_FILE = "Ocean0_3D_Claire.nc"
+
+#override MASS_WEIGHT_IN_PGF_VANISHED_ONLY = True
+#override RESET_INTXPA_INTEGRAL_FLATTEST = True
+!#override BOUSSINESQ = False
+!#override SEMI_BOUSSINESQ = False
+
+#override RESCALE_STRONG_DRAG = True
+#override BT_STRONG_DRAG = True
+
+#override TS_CONFIG = "file"
+#override TS_FILE = "quadraticSalt.nc"
+#override TRIM_IC_FOR_P_SURF = False 
+! hackmode - required for perfect initialisation near grounding line in sigma coords
+#override THICKNESS_CONFIG = "thickness_file"
+#override THICKNESS_FILE = "thickness_pfile.nc"  ! This is defined in make_thickness.ipynb
+#override REMAP_AFTER_INITIALIZATION = False
+#override HACK_MODE = True 
+
+#override DT = 100
+#override DT_THERM = 100
+!#override RESET_INTXPA_H_NONVANISHED = 1.
