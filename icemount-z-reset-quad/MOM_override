@@ -17,16 +17,23 @@ ICE_THICKNESS_VARNAME = "D" ! default = "h_shelf"
 ICE_AREA_VARNAME = "Ah"       ! default = "area_shelf_h"
 
 !#override TS_CONFIG = "ISOMIP"
-#override TS_CONFIG = "TS_profile"
-#override TS_FILE = "quadraticSalticemountz1D.nc"
+#override TS_CONFIG = "file"
+#override TS_FILE = "quadraticSalticemountz_fromprog.nc"
 #override PRESSURE_RECONSTRUCTION_SCHEME = 2
+REMAPPING_USE_OM4_SUBCELLS = False
 
 #override ICE_SHELF = True
 
 #override IC_OUTPUT_FILE = "MOM_IC.nc"
 
-#override THICKNESS_CONFIG = "ISOMIP"
-#override TRIM_IC_FOR_P_SURF = True
+!#override THICKNESS_CONFIG = "ISOMIP"
+!#override TRIM_IC_FOR_P_SURF = True
+!!HACKMODE
+#override THICKNESS_CONFIG = "thickness_file"
+#override THICKNESS_FILE = "thickness_pfile_from_prog.nc"  ! This is defined in make_thickness.ipynb
+#override REMAP_AFTER_INITIALIZATION = False
+#override HACK_MODE = True 
+
 SURFACE_PRESSURE_FILE = "fatseamountice.nc" !
 !SURFACE_PRESSURE_FILE = "flatice0.nc"
                                 ! The initial condition file for the surface pressure exerted by ice.
@@ -52,3 +59,7 @@ SURFACE_PRESSURE_SCALE = 8820.0 !   [file dependent] default = 1.0
 !#override CORRECTION_INTXPA = True
 !#override CORRECTION_INTXPA_5PT = True
 #override RESET_INTXPA_INTEGRAL = True
+#override MASS_WEIGHT_IN_PGF_VANISHED_ONLY = True ! Only apply MWIPG to cells partially vanished
+!#override RESET_INTXPA_INTEGRAL_FLATTEST = True
+!RESET_INTXPA_H_NONVANISHED = 190
+#override HARMONIC_BL_SCALE = 1

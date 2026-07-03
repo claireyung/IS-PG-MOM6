@@ -56,3 +56,5 @@ SURFACE_PRESSURE_SCALE = 8820.0 !   [file dependent] default = 1.0
 !#override CORRECTION_INTXPA_5PT = True
 #override RESET_INTXPA_INTEGRAL = True
 #override EQN_OF_STATE = "WRIGHT"
+#override FRAC_DP_AT_POS_NEGATIVE_P_BUGFIX = True
+

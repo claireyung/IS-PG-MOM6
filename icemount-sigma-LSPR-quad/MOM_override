@@ -16,8 +16,9 @@ ICE_THICKNESS_FILE = "fatseamountice.nc" ! default = "ice_shelf_h.nc"
 ICE_THICKNESS_VARNAME = "D" ! default = "h_shelf"
 ICE_AREA_VARNAME = "Ah"       ! default = "area_shelf_h"
 
-#override TS_CONFIG = "TS_profile"
-#override TS_FILE = "quadraticSalticemountsigma1D.nc"
+!#override TS_CONFIG = "TS_profile"
+#override TS_CONFIG = "file"
+#override TS_FILE = "quadraticSalticemountsigma.nc"
 
 #override PRESSURE_RECONSTRUCTION_SCHEME = 2
 !#override HACK_MODE = True
@@ -25,8 +26,14 @@ ICE_AREA_VARNAME = "Ah"       ! default = "area_shelf_h"
 
 #override IC_OUTPUT_FILE = "MOM_IC.nc"
 
-#override THICKNESS_CONFIG = "ISOMIP"
-#override TRIM_IC_FOR_P_SURF = True
+!#override THICKNESS_CONFIG = "ISOMIP"
+!#override TRIM_IC_FOR_P_SURF = True
+!!HACKMODE
+#override THICKNESS_CONFIG = "thickness_file"
+#override THICKNESS_FILE = "thickness_pfile.nc"  ! This is defined in make_thickness.ipynb
+#override REMAP_AFTER_INITIALIZATION = False
+#override HACK_MODE = True 
+!!HACKMODE
 SURFACE_PRESSURE_FILE = "fatseamountice.nc" !
 !SURFACE_PRESSURE_FILE = "flatice0.nc"
                                 ! The initial condition file for the surface pressure exerted by ice.
