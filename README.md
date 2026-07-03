@@ -1,7 +1,7 @@
 # Ice Shelf Pressure Gradient testing in MOM6
 
 This repo contains the model configurations and plotting notebooks for
-Yung, C.K., Hallberg, R.W., Adcroft, A. and Morrison, A.K. "Assessment of a finite volume discretization of the horizontal pressure gradient force beneath sloping ice shelves" in prep., 2025
+Yung, C.K., Hallberg, R.W., Adcroft, A. and Morrison, A.K. ["Assessment of a finite volume discretization of the horizontal pressure gradient force beneath sloping ice shelves"](https://essopenarchive.org/doi/full/10.22541/essoar.176487287.73766620/v1) in review, 2025
 
 We modified the [seamount test case in MOM6-examples](https://github.com/NOAA-GFDL/MOM6-examples/tree/dev/gfdl/ocean_only/seamount), to test initialisation and spurious currents in a simple, 2D set-up.
 
@@ -26,4 +26,4 @@ To run, a compiled version of MOM6 is required. Since the model domain is mostly
 mpirun  -host localhost ../../../../build/ocean_only/MOM6
 ```
 
-Plots of the model results (quiet cases) are in `plotting.ipynb` and `compare-mwipg.ipynb`. Plots of the PG algorithm presented earlier in the paper are in `mom-pg-minimise-combined-func.ipynb`.
+Plots of the model results (quiet cases) are in `plotting.ipynb` and `compare-mwipg.ipynb`. Plots of the PG algorithm presented earlier in the paper are in `mom-pg-shape-analysis.ipynb`.
